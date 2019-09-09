@@ -5,6 +5,7 @@ const enemies = document.getElementsByClassName('enemy')
 const enemyLoc = []
 
 for(let i = 0; i < enemies.length; i++){
+  enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
   let enemyObj = {
     id: enemies[i].id,
     top: enemies[i].offsetTop,
@@ -111,13 +112,15 @@ const shoot = () => {
   laser.classList.add('laser')
   laser.style.left = currentLeft
   let intervalId = setInterval(() => {
+    laser.innerHTML = `<p style='position: absolute; color: white;'>${laser.offsetLeft}</p>`
     enemyLoc.forEach(element => {
-      if((element.top - laser.offsetTop) > 5 
-      && (element.left - laser.offsetLeft) >= 0
-      && (element.left - laser.offsetLeft) <=5)
-      {
-        killEnemy(element, laser)
+      if(laser.offsetTop - element.top < 5){
+        if(laser.offsetLeft === element.left || 
+          (laser.offsetLeft - element.left <= 15 && laser.offsetLeft - element.left >= 0)){
+          killEnemy(element, laser)
+        }
       }
+      
     })
   }, 5);
   laser.addEventListener('animationend', (e) => {
