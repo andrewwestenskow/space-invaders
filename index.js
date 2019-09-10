@@ -2,6 +2,12 @@ const player = document.getElementById('player')
 const game = document.getElementById('game-area')
 const enemies = document.getElementsByClassName('enemy')
 const enemiesHold = document.getElementById('enemies-hold')
+var row1 = []
+var row2 = []
+var row3 = []
+var row4 = []
+var row5 = []
+let watch = []
 const enemyLoc = []
 const pressedKeys = []
 let canShoot = true
@@ -9,31 +15,32 @@ let moveInterval = 1250
 let direction = 'right'
 let lastDirection = ''
 
+
 //GAME SETUP
 
 const createEnemies = () => {
   let left = 5
   let id = 1
-  for (let i = 0; i < 11; i++) {
-    let row = document.querySelector('.row1')
-    let alien = new Image()
-    alien.src = './Assets/alien1.png'
-    alien.classList.add('enemy')
-    alien.style.left = `${left}%`
-    alien.style.top = `10%`
-    alien.id = `enemy-${id}`
-    row.append(alien)
-    left += 7
-    id++
-  }
+  // for (let i = 0; i < 11; i++) {
+  //   let row = document.querySelector('.row5')
+  //   let alien = new Image()
+  //   alien.src = './Assets/alien1.png'
+  //   alien.classList.add('enemy', '5')
+  //   alien.style.left = `${left}%`
+  //   alien.style.top = `10%`
+  //   alien.id = `enemy-${id}`
+  //   row.append(alien)
+  //   left += 7
+  //   id++
+  // }
 
   left = 5
 
   for (let i = 0; i < 11; i++) {
-    let row = document.querySelector('.row2')
+    let row = document.querySelector('.row4')
     let alien = new Image()
     alien.src = './Assets/alien3.png'
-    alien.classList.add('enemy')
+    alien.classList.add('enemy', '4')
     alien.style.left = `${left}%`
     alien.style.top = `15%`
     alien.id = `enemy-${id}`
@@ -48,7 +55,7 @@ const createEnemies = () => {
     let row = document.querySelector('.row3')
     let alien = new Image()
     alien.src = './Assets/alien1.png'
-    alien.classList.add('enemy')
+    alien.classList.add('enemy', '3')
     alien.style.left = `${left}%`
     alien.style.top = `20%`
     alien.id = `enemy-${id}`
@@ -60,10 +67,10 @@ const createEnemies = () => {
   left = 5
 
   for (let i = 0; i < 11; i++) {
-    let row = document.querySelector('.row4')
+    let row = document.querySelector('.row2')
     let alien = new Image()
     alien.src = './Assets/alien3.png'
-    alien.classList.add('enemy')
+    alien.classList.add('enemy', '2')
     alien.style.left = `${left}%`
     alien.style.top = `25%`
     alien.id = `enemy-${id}`
@@ -74,18 +81,18 @@ const createEnemies = () => {
 
   left = 5
 
-  // for (let i = 0; i < 11; i++) {
-  //   let row = document.querySelector('.row5')
-  //   let alien = new Image()
-  //   alien.src = './Assets/alien1.png'
-  //   alien.classList.add('enemy')
-  //   alien.style.left = `${left}%`
-  //   alien.style.top = `30%`
-  //   alien.id = `enemy-${id}`
-  //   row.append(alien)
-  //   left += 7
-  //   id++
-  // }
+  for (let i = 0; i < 11; i++) {
+    let row = document.querySelector('.row1')
+    let alien = new Image()
+    alien.src = './Assets/alien1.png'
+    alien.classList.add('enemy', '1')
+    alien.style.left = `${left}%`
+    alien.style.top = `30%`
+    alien.id = `enemy-${id}`
+    row.append(alien)
+    left += 7
+    id++
+  }
 
   for (let i = 0; i < enemies.length; i++) {
     // enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
@@ -94,9 +101,24 @@ const createEnemies = () => {
       top: enemies[i].offsetTop,
       left: enemies[i].offsetLeft
     }
-
     enemyLoc.push(enemyObj)
   }
+
+  for(let i = 0; i < 6; i++){
+    let selected = document.getElementsByClassName(i)
+    for(let j = 0; j < selected.length; j++){
+      let obj = {
+        row: i,
+        id: selected[j].id,
+        top: selected[j].offsetTop,
+        left: selected[j].offsetLeft
+      }
+      window[`row${i}`].push(obj)
+    }
+  }
+  watch = row1
+
+  console.log(watch)
 }
 
 
@@ -110,8 +132,6 @@ const handleMove = () => {
     }, moveInterval);
   }
 }
-
-handleMove()
 
 const enemiesMove = () => {
   switch (direction) {
@@ -261,18 +281,20 @@ const moveRight = () => {
   }
 }
 
-const killEnemy = (enemy, laser, intervalId) => {
-  console.log(`top laser: ${laser.offsetTop}  Box: ${enemy.top}`)
-  console.log(`left laser: ${laser.offsetLeft} Box: ${enemy.left}`)
+const killEnemy = (enemy, laser, intervalId, locIndex) => {
+  // console.log(`top laser: ${laser.offsetTop}  Box: ${enemy.top}`)
+  // console.log(`left laser: ${laser.offsetLeft} Box: ${enemy.left}`)
   const findEnemy = document.getElementById(enemy.id)
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
+  
   clearInterval(intervalId)
   enemyLoc.splice(index, 1)
+  console.log(enemy)
+  //EXPLOSION
   const boom = new Image()
   boom.src = './Assets/boom.png'
   boom.classList.add('boom')
   boom.style.top = `${enemy.top}px`
-  console.log(enemy.top)
   boom.style.left = laser.style.left
   game.append(boom)
   findEnemy.remove()
@@ -281,7 +303,7 @@ const killEnemy = (enemy, laser, intervalId) => {
     boom.remove()
   }, 350);
   moveInterval -= 20
-  console.log(boom)
+  console.log(row1)
 }
 
 const shoot = () => {
@@ -291,16 +313,15 @@ const shoot = () => {
   laser.style.left = `${getLeft(currentLeft) + 5}%`
   let intervalId = setInterval(() => {
     // laser.innerHTML = `<p style='position: absolute; color: white;'>${laser.offsetLeft}</p>`
-    enemyLoc.forEach((element, index) => {
+    watch.forEach((element, index) => {
       // console.log(`${index}: ${element.left}`)
 
-      if (laser.offsetTop - element.top < 10 && laser.offsetTop - element.top > 0) {
+      if (laser.offsetTop - element.top <= 15 && laser.offsetTop - element.top > 0) {
         if (laser.offsetLeft === element.left ||
           (laser.offsetLeft - element.left <= 50 && laser.offsetLeft - element.left >= -25)) {
-          killEnemy(element, laser, intervalId)
+          killEnemy(element, laser, intervalId, index)
         }
       }
-//LASER AT 50 alien at 46
     })
   }, 1); 
   laser.addEventListener('animationend', (e) => {
@@ -313,6 +334,7 @@ const shoot = () => {
 const startGame = (e) => {
   if(e.keyCode === 13){
     createEnemies()
+    handleMove()
     const welcome = document.querySelector('.welcome-screen')
     welcome.remove()
     document.removeEventListener('keydown', startGame)
