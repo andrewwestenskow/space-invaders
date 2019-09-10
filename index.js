@@ -20,6 +20,7 @@ const createEnemies = () => {
     alien.src = './Assets/alien1.png'
     alien.classList.add('enemy')
     alien.style.left = `${left}%`
+    alien.style.top = `10%`
     alien.id = `enemy-${id}`
     row.append(alien)
     left += 7
@@ -27,7 +28,7 @@ const createEnemies = () => {
   }
 
   for (let i = 0; i < enemies.length; i++) {
-    enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
+    // enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
     let enemyObj = {
       id: enemies[i].id,
       top: enemies[i].offsetTop,
@@ -69,9 +70,10 @@ const enemiesMove = () => {
 
 const enemiesRight = () => {
   for (let i = 0; i < enemies.length; i++) {
-    let currentLeft = getLeft(enemies[i].style.left)
-    enemies[i].style.left = `${currentLeft + 5}%`
-    if (currentLeft > 85) {
+    let newLeft = (getLeft(enemies[i].style.left)) + 5
+    enemies[i].style.left = `${newLeft}%`
+    enemyLoc[i].left = enemies[i].offsetLeft
+    if (newLeft > 90) {
       direction = 'down'
       lastDirection = 'right'
     }
@@ -80,10 +82,10 @@ const enemiesRight = () => {
 
 const enemiesLeft = () => {
   for (let i = 0; i < enemies.length; i++) {
-    let currentLeft = getLeft(enemies[i].style.left)
-    enemies[i].style.left = `${currentLeft - 5}%`
-    if (currentLeft < 10) {
-      console.log('wall')
+    let newLeft = (getLeft(enemies[i].style.left)) - 5
+    enemies[i].style.left = `${newLeft}%`
+    enemyLoc[i].left = enemies[i].offsetLeft
+    if (newLeft < 5) {
       direction = 'down'
       lastDirection = 'left'
     }
@@ -92,9 +94,12 @@ const enemiesLeft = () => {
 
 const enemiesDown = () => {
   for (let i = 0; i < enemies.length; i++) {
-    let currentTop = getLeft(enemies[i].style.top)
-    console.log(currentTop)
-    enemies[i].style.top = `${currentTop + 5}%`
+    let newTop = (getLeft(enemies[i].style.top)) + 5
+    if(newTop === 75) {
+      return
+    }
+    enemies[i].style.top = `${newTop}%`
+    enemyLoc[i].top = enemies[i].offsetTop
   }
   if(lastDirection === 'right'){
     direction = 'left'
@@ -190,18 +195,21 @@ const moveLeft = () => {
 
 const moveRight = () => {
   const currentLeft = player.style.left
-  if (currentLeft !== `97%`) {
+  if (currentLeft !== `90%`) {
     const newLeft = `${(+currentLeft.substr(0, currentLeft.length - 1)) + 1}%`
     player.style.left = newLeft
   }
 }
 
-const killEnemy = (enemy, laser) => {
+const killEnemy = (enemy, laser, intervalId) => {
+  // console.log(`laser: ${laser.offsetTop}.  Box: ${enemy.offsetTop}`)
   const findEnemy = document.getElementById(enemy.id)
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
+  clearInterval(intervalId)
   enemyLoc.splice(index, 1)
   findEnemy.remove()
   laser.remove()
+  moveInterval -= 15
 }
 
 const shoot = () => {
@@ -211,11 +219,13 @@ const shoot = () => {
   laser.style.left = `${getLeft(currentLeft) + 5}%`
   let intervalId = setInterval(() => {
     // laser.innerHTML = `<p style='position: absolute; color: white;'>${laser.offsetLeft}</p>`
-    enemyLoc.forEach(element => {
-      if (laser.offsetTop - element.top < 5) {
+    enemyLoc.forEach((element, index) => {
+      // console.log(`${index}: ${element.left}`)
+      
+      if (laser.offsetTop - element.top < 10) {
         if (laser.offsetLeft === element.left ||
           (laser.offsetLeft - element.left <= 50 && laser.offsetLeft - element.left >= 0)) {
-          killEnemy(element, laser)
+          killEnemy(element, laser, intervalId)
         }
       }
 
