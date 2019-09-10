@@ -49,6 +49,13 @@ body{
   width: 60px;
   height: 60px;
   position: absolute;
+  border: 1px solid white
+}
+
+.boom{
+  width: 60px;
+  height: 60px;
+  position: absolute;
 }
 
 .row1{
@@ -71,4 +78,5 @@ body{
   position: fixed;
   top: 25%;
   font-family: 'Source Code Pro', monospace;
+  text-align: center;
 }

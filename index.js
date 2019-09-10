@@ -5,7 +5,7 @@ const enemiesHold = document.getElementById('enemies-hold')
 const enemyLoc = []
 const pressedKeys = []
 let canShoot = true
-let moveInterval = 1000
+let moveInterval = 1250
 let direction = 'right'
 let lastDirection = ''
 
@@ -74,18 +74,18 @@ const createEnemies = () => {
 
   left = 5
 
-  for (let i = 0; i < 11; i++) {
-    let row = document.querySelector('.row5')
-    let alien = new Image()
-    alien.src = './Assets/alien1.png'
-    alien.classList.add('enemy')
-    alien.style.left = `${left}%`
-    alien.style.top = `30%`
-    alien.id = `enemy-${id}`
-    row.append(alien)
-    left += 7
-    id++
-  }
+  // for (let i = 0; i < 11; i++) {
+  //   let row = document.querySelector('.row5')
+  //   let alien = new Image()
+  //   alien.src = './Assets/alien1.png'
+  //   alien.classList.add('enemy')
+  //   alien.style.left = `${left}%`
+  //   alien.style.top = `30%`
+  //   alien.id = `enemy-${id}`
+  //   row.append(alien)
+  //   left += 7
+  //   id++
+  // }
 
   for (let i = 0; i < enemies.length; i++) {
     // enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
@@ -155,15 +155,15 @@ const enemiesLeft = () => {
 const enemiesDown = () => {
   for (let i = 0; i < enemies.length; i++) {
     let newTop = (getLeft(enemies[i].style.top)) + 5
-    if(newTop === 80) {
+    if (newTop === 80) {
       return
     }
     enemies[i].style.top = `${newTop}%`
     enemyLoc[i].top = enemies[i].offsetTop
   }
-  if(lastDirection === 'right'){
+  if (lastDirection === 'right') {
     direction = 'left'
-  } else if(lastDirection === 'left'){
+  } else if (lastDirection === 'left') {
     direction = 'right'
   }
 }
@@ -178,7 +178,7 @@ const disableShot = () => {
   canShoot = false
   setTimeout(() => {
     canShoot = true
-  }, 150);
+  }, 250);
 }
 
 //MECHANICS
@@ -262,14 +262,26 @@ const moveRight = () => {
 }
 
 const killEnemy = (enemy, laser, intervalId) => {
-  console.log(`laser: ${laser.offsetTop}  Box: ${enemy.top}`)
+  console.log(`top laser: ${laser.offsetTop}  Box: ${enemy.top}`)
+  console.log(`left laser: ${laser.offsetLeft} Box: ${enemy.left}`)
   const findEnemy = document.getElementById(enemy.id)
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
   clearInterval(intervalId)
   enemyLoc.splice(index, 1)
+  const boom = new Image()
+  boom.src = './Assets/boom.png'
+  boom.classList.add('boom')
+  boom.style.top = `${enemy.top}px`
+  console.log(enemy.top)
+  boom.style.left = laser.style.left
+  game.append(boom)
   findEnemy.remove()
   laser.remove()
+  setTimeout(() => {
+    boom.remove()
+  }, 350);
   moveInterval -= 20
+  console.log(boom)
 }
 
 const shoot = () => {
@@ -281,16 +293,16 @@ const shoot = () => {
     // laser.innerHTML = `<p style='position: absolute; color: white;'>${laser.offsetLeft}</p>`
     enemyLoc.forEach((element, index) => {
       // console.log(`${index}: ${element.left}`)
-      
+
       if (laser.offsetTop - element.top < 10 && laser.offsetTop - element.top > 0) {
         if (laser.offsetLeft === element.left ||
-          (laser.offsetLeft - element.left <= 50 && laser.offsetLeft - element.left >= 0)) {
+          (laser.offsetLeft - element.left <= 50 && laser.offsetLeft - element.left >= -25)) {
           killEnemy(element, laser, intervalId)
         }
       }
-
+//LASER AT 50 alien at 46
     })
-  }, 5);
+  }, 1); 
   laser.addEventListener('animationend', (e) => {
     clearInterval(intervalId)
     e.target.remove()
@@ -298,8 +310,17 @@ const shoot = () => {
   game.appendChild(laser)
 }
 
+const startGame = (e) => {
+  if(e.keyCode === 13){
+    createEnemies()
+    const welcome = document.querySelector('.welcome-screen')
+    welcome.remove()
+    document.removeEventListener('keydown', startGame)
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keyup', handleKeyUp)
+  }
 
+}
 
+document.addEventListener('keydown', startGame)
 
-document.addEventListener('keydown', handleKeyDown)
-document.addEventListener('keyup', handleKeyUp)
