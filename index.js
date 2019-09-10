@@ -27,6 +27,66 @@ const createEnemies = () => {
     id++
   }
 
+  left = 5
+
+  for (let i = 0; i < 11; i++) {
+    let row = document.querySelector('.row2')
+    let alien = new Image()
+    alien.src = './Assets/alien3.png'
+    alien.classList.add('enemy')
+    alien.style.left = `${left}%`
+    alien.style.top = `15%`
+    alien.id = `enemy-${id}`
+    row.append(alien)
+    left += 7
+    id++
+  }
+
+  left = 5
+
+  for (let i = 0; i < 11; i++) {
+    let row = document.querySelector('.row3')
+    let alien = new Image()
+    alien.src = './Assets/alien1.png'
+    alien.classList.add('enemy')
+    alien.style.left = `${left}%`
+    alien.style.top = `20%`
+    alien.id = `enemy-${id}`
+    row.append(alien)
+    left += 7
+    id++
+  }
+
+  left = 5
+
+  for (let i = 0; i < 11; i++) {
+    let row = document.querySelector('.row4')
+    let alien = new Image()
+    alien.src = './Assets/alien3.png'
+    alien.classList.add('enemy')
+    alien.style.left = `${left}%`
+    alien.style.top = `25%`
+    alien.id = `enemy-${id}`
+    row.append(alien)
+    left += 7
+    id++
+  }
+
+  left = 5
+
+  for (let i = 0; i < 11; i++) {
+    let row = document.querySelector('.row5')
+    let alien = new Image()
+    alien.src = './Assets/alien1.png'
+    alien.classList.add('enemy')
+    alien.style.left = `${left}%`
+    alien.style.top = `30%`
+    alien.id = `enemy-${id}`
+    row.append(alien)
+    left += 7
+    id++
+  }
+
   for (let i = 0; i < enemies.length; i++) {
     // enemies[i].innerHTML = `<p style='position: absolute; color: white;'>${enemies[i].offsetLeft}</p>`
     let enemyObj = {
@@ -38,7 +98,7 @@ const createEnemies = () => {
     enemyLoc.push(enemyObj)
   }
 }
-createEnemies()
+
 
 //ENEMY LOGIC
 
@@ -95,7 +155,7 @@ const enemiesLeft = () => {
 const enemiesDown = () => {
   for (let i = 0; i < enemies.length; i++) {
     let newTop = (getLeft(enemies[i].style.top)) + 5
-    if(newTop === 75) {
+    if(newTop === 80) {
       return
     }
     enemies[i].style.top = `${newTop}%`
@@ -118,7 +178,7 @@ const disableShot = () => {
   canShoot = false
   setTimeout(() => {
     canShoot = true
-  }, 500);
+  }, 150);
 }
 
 //MECHANICS
@@ -202,14 +262,14 @@ const moveRight = () => {
 }
 
 const killEnemy = (enemy, laser, intervalId) => {
-  // console.log(`laser: ${laser.offsetTop}.  Box: ${enemy.offsetTop}`)
+  console.log(`laser: ${laser.offsetTop}  Box: ${enemy.top}`)
   const findEnemy = document.getElementById(enemy.id)
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
   clearInterval(intervalId)
   enemyLoc.splice(index, 1)
   findEnemy.remove()
   laser.remove()
-  moveInterval -= 15
+  moveInterval -= 20
 }
 
 const shoot = () => {
@@ -222,7 +282,7 @@ const shoot = () => {
     enemyLoc.forEach((element, index) => {
       // console.log(`${index}: ${element.left}`)
       
-      if (laser.offsetTop - element.top < 10) {
+      if (laser.offsetTop - element.top < 10 && laser.offsetTop - element.top > 0) {
         if (laser.offsetLeft === element.left ||
           (laser.offsetLeft - element.left <= 50 && laser.offsetLeft - element.left >= 0)) {
           killEnemy(element, laser, intervalId)

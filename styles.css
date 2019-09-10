@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+
 *{
   box-sizing: border-box;
   margin: 0;
@@ -25,7 +27,8 @@ body{
   width: 100px;
   height: 50px;
   position: absolute;
-  bottom: 200px;
+  bottom: 100px;
+  left: 50%;
 }
 
 #enemies-hold{
@@ -39,8 +42,7 @@ body{
   border: 1px solid white;
   height: 15px;
   width: 1px;
-  bottom: 250px;
-  animation: shoot 3500ms linear
+  animation: shoot 1500ms linear
 }
 
 .enemy{
@@ -62,4 +64,11 @@ body{
   100%{
     bottom: 100%
   }
+}
+
+.welcome-screen{
+  color: green;
+  position: fixed;
+  top: 25%;
+  font-family: 'Source Code Pro', monospace;
 }
