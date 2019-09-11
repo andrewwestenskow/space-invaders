@@ -117,8 +117,6 @@ const createEnemies = () => {
     }
   }
   watch = row1
-
-  console.log(watch)
 }
 
 
@@ -300,14 +298,24 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
   
   clearInterval(intervalId)
+  //Data manipulation
   enemyLoc.splice(index, 1)
-  console.log(enemy)
+  const replacement = window[`row${enemy.row + 1}`][locIndex]
+  if(replacement){
+    const replacementEl = document.getElementById(replacement.id)
+    replacement.left = replacementEl.offsetLeft
+    replacement.top = replacementEl.offsetTop
+    watch.splice(locIndex, 1, replacement)
+  } else {
+    watch.splice(locIndex, 1, {id: null, top: 99999999, left: 999999999})
+  }
   //EXPLOSION
   const boom = new Image()
   boom.src = './Assets/boom.png'
   boom.classList.add('boom')
   boom.style.top = `${enemy.top}px`
   boom.style.left = laser.style.left
+  //DOM Manipulation
   game.append(boom)
   findEnemy.remove()
   laser.remove()
@@ -315,7 +323,6 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
     boom.remove()
   }, 350);
   moveInterval -= 20
-  console.log(row1)
 }
 
 const shoot = () => {
@@ -342,6 +349,8 @@ const shoot = () => {
   })
   game.appendChild(laser)
 }
+
+//Game start & end
 
 const startGame = (e) => {
   if(e.keyCode === 13){

@@ -46,15 +46,15 @@ body{
 }
 
 .enemy{
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   position: absolute;
   /* border: 1px solid white */
 }
 
 .boom{
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   position: absolute;
 }
 
