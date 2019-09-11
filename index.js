@@ -153,6 +153,10 @@ const enemiesRight = () => {
     let newLeft = (getLeft(enemies[i].style.left)) + 5
     enemies[i].style.left = `${newLeft}%`
     enemyLoc[i].left = enemies[i].offsetLeft
+    let index = watch.findIndex(element => element.id === enemies[i].id)
+    if(index !== -1){
+      watch[index].left = enemies[i].offsetLeft
+    }
     if (newLeft > 90) {
       direction = 'down'
       lastDirection = 'right'
@@ -169,6 +173,10 @@ const enemiesLeft = () => {
       direction = 'down'
       lastDirection = 'left'
     }
+    let index = watch.findIndex(element => element.id === enemies[i].id)
+    if(index !== -1){
+      watch[index].left = enemies[i].offsetLeft
+    }
   }
 }
 
@@ -180,6 +188,10 @@ const enemiesDown = () => {
     }
     enemies[i].style.top = `${newTop}%`
     enemyLoc[i].top = enemies[i].offsetTop
+    let index = watch.findIndex(element => element.id === enemies[i].id)
+    if(index !== -1){
+      watch[index].top = enemies[i].offsetTop
+    }
   }
   if (lastDirection === 'right') {
     direction = 'left'
