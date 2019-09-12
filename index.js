@@ -14,6 +14,7 @@ let canShoot = true
 let moveInterval = 1000
 let direction = 'right'
 let lastDirection = ''
+let lost = false
 
 
 //GAME SETUP
@@ -123,7 +124,8 @@ const createEnemies = () => {
 //ENEMY LOGIC
 
 const handleMove = () => {
-  if (moveInterval > 10) {
+  console.log(moveInterval)
+  if (moveInterval > 10 && !lost) {
     setTimeout(() => {
       enemiesMove()
       handleMove()
@@ -368,6 +370,7 @@ const startGame = (e) => {
     moveInterval = 1000
     direction = 'right'
     lastDirection = ''
+    lost = false
     createEnemies()
     handleMove()
     const welcome = document.querySelector('.welcome-screen')
@@ -382,7 +385,7 @@ const startGame = (e) => {
 }
 
 const lose = () => {
-
+  lost = true
   document.querySelectorAll('.enemy').forEach(element => element.remove())
   document.addEventListener('keydown', startGame)
   document.removeEventListener('keydown', handleKeyDown)
