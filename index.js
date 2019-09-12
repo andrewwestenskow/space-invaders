@@ -128,6 +128,8 @@ const handleMove = () => {
     setTimeout(() => {
       enemiesMove()
       handleMove()
+      let enemyShootIndex = Math.floor(Math.random() * 11)
+      enemyShoot(enemyShootIndex)
     }, moveInterval);
   }
 }
@@ -198,6 +200,10 @@ const enemiesDown = () => {
   } else if (lastDirection === 'left') {
     direction = 'right'
   }
+}
+
+const enemyShoot = (index) => {
+  console.log(watch[index])
 }
 
 //FUNCTIONALITY
