@@ -8,10 +8,10 @@ var row3 = []
 var row4 = []
 var row5 = []
 let watch = []
-const enemyLoc = []
-const pressedKeys = []
+let enemyLoc = []
+let pressedKeys = []
 let canShoot = true
-let moveInterval = 1250
+let moveInterval = 1000
 let direction = 'right'
 let lastDirection = ''
 
@@ -104,9 +104,9 @@ const createEnemies = () => {
     enemyLoc.push(enemyObj)
   }
 
-  for(let i = 0; i < 6; i++){
+  for (let i = 0; i < 6; i++) {
     let selected = document.getElementsByClassName(i)
-    for(let j = 0; j < selected.length; j++){
+    for (let j = 0; j < selected.length; j++) {
       let obj = {
         row: i,
         id: selected[j].id,
@@ -152,7 +152,7 @@ const enemiesRight = () => {
     enemies[i].style.left = `${newLeft}%`
     enemyLoc[i].left = enemies[i].offsetLeft
     let index = watch.findIndex(element => element.id === enemies[i].id)
-    if(index !== -1){
+    if (index !== -1) {
       watch[index].left = enemies[i].offsetLeft
     }
     if (newLeft > 90) {
@@ -172,7 +172,7 @@ const enemiesLeft = () => {
       lastDirection = 'left'
     }
     let index = watch.findIndex(element => element.id === enemies[i].id)
-    if(index !== -1){
+    if (index !== -1) {
       watch[index].left = enemies[i].offsetLeft
     }
   }
@@ -182,12 +182,13 @@ const enemiesDown = () => {
   for (let i = 0; i < enemies.length; i++) {
     let newTop = (getLeft(enemies[i].style.top)) + 5
     if (newTop === 80) {
+      lose()
       return
     }
     enemies[i].style.top = `${newTop}%`
     enemyLoc[i].top = enemies[i].offsetTop
     let index = watch.findIndex(element => element.id === enemies[i].id)
-    if(index !== -1){
+    if (index !== -1) {
       watch[index].top = enemies[i].offsetTop
     }
   }
@@ -210,6 +211,7 @@ const disableShot = () => {
     canShoot = true
   }, 250);
 }
+
 
 //MECHANICS
 
@@ -296,18 +298,18 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
   // console.log(`left laser: ${laser.offsetLeft} Box: ${enemy.left}`)
   const findEnemy = document.getElementById(enemy.id)
   const index = enemyLoc.findIndex(element => element.id === enemy.id)
-  
+
   clearInterval(intervalId)
   //Data manipulation
   enemyLoc.splice(index, 1)
   const replacement = window[`row${enemy.row + 1}`][locIndex]
-  if(replacement){
+  if (replacement) {
     const replacementEl = document.getElementById(replacement.id)
     replacement.left = replacementEl.offsetLeft
     replacement.top = replacementEl.offsetTop
     watch.splice(locIndex, 1, replacement)
   } else {
-    watch.splice(locIndex, 1, {id: null, top: 99999999, left: 999999999})
+    watch.splice(locIndex, 1, { id: null, top: 99999999, left: 999999999 })
   }
   //EXPLOSION
   const boom = new Image()
@@ -342,7 +344,7 @@ const shoot = () => {
         }
       }
     })
-  }, 1); 
+  }, 1);
   laser.addEventListener('animationend', (e) => {
     clearInterval(intervalId)
     e.target.remove()
@@ -353,11 +355,25 @@ const shoot = () => {
 //Game start & end
 
 const startGame = (e) => {
-  if(e.keyCode === 13){
+  if (e.keyCode === 13) {
+    row1 = []
+    row2 = []
+    row3 = []
+    row4 = []
+    row5 = []
+    watch = []
+    enemyLoc = []
+    pressedKeys = []
+    canShoot = true
+    moveInterval = 1000
+    direction = 'right'
+    lastDirection = ''
     createEnemies()
     handleMove()
     const welcome = document.querySelector('.welcome-screen')
-    welcome.remove()
+    if (welcome) {
+      welcome.remove()
+    }
     document.removeEventListener('keydown', startGame)
     document.addEventListener('keydown', handleKeyDown)
     document.addEventListener('keyup', handleKeyUp)
@@ -365,5 +381,18 @@ const startGame = (e) => {
 
 }
 
-document.addEventListener('keydown', startGame)
+const lose = () => {
 
+  document.querySelectorAll('.enemy').forEach(element => element.remove())
+  document.addEventListener('keydown', startGame)
+  document.removeEventListener('keydown', handleKeyDown)
+  document.removeEventListener('keyup', handleKeyUp)
+
+}
+
+const win = () => {
+  console.log('win')
+}
+
+
+document.addEventListener('keydown', startGame)

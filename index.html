@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,30 @@
   <link rel="stylesheet" href="styles.css">
   <title>Document</title>
 </head>
+
 <body>
   <div id="game-area">
     <div class="welcome-screen">
-      <h1>SPACE INVADERS</h1>
-      <h3>Press ENTER to begin</h3>
+      <h1 style='font-size: 3rem'>SPACE INVADERS</h1>
+      <h2>Press ENTER to begin</h2>
+      <div class="instructions-hold">
+        <h3>Instructions</h3>
+        <ul>
+          <li>Left and right arrow keys to move</li>
+          <li>Space to shoot</li>
+        </ul>
+      </div>
+      <div class="scores-example">
+        <div class="scores-example-row">
+          <img src="./Assets/alien1.png" alt="" class="example-enemy">
+          <h2> = 20 points</h2>
+        </div>
+        <div class="scores-example-row">
+          <img src="./Assets/alien3.png" alt="" class="example-enemy">
+          <h2> = 40 points</h2>
+        </div>
+      </div>
+      <p>Built by Andrew Westenskow <br> using vanilla Javasript, HTML, and CSS</p>
     </div>
     <!-- <div id="enemies-hold"> -->
     <div class="row5"></div>
@@ -19,9 +39,10 @@
     <div class="row3"></div>
     <div class="row2"></div>
     <div class="row1"></div>
-  <!-- </div> -->
-    <img src='./Assets/player.png' style='left: 50%' id="player"/>
+    <!-- </div> -->
+    <img src='./Assets/player.png' style='left: 50%' id="player" />
   </div>
   <script src="index.js"></script>
 </body>
+
 </html>
