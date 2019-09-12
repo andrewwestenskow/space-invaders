@@ -29,6 +29,7 @@ body{
   position: absolute;
   bottom: 100px;
   left: 50%;
+  z-index: 5;
 }
 
 #enemies-hold{
@@ -66,7 +67,7 @@ body{
 
 @keyframes shoot {
   0%{
-    bottom: 215px
+    bottom: 120px
   }
   100%{
     bottom: 100%
@@ -101,4 +102,22 @@ body{
   width: 50px;
   height: 50px;
   margin-right: 10px;
+}
+
+.lose-screen{
+  color: green;
+  position: fixed;
+  top: 10%;
+  font-family: 'Source Code Pro', monospace;
+  text-align: center;
+  display: none;
+}
+
+.win-screen{
+  color: green;
+  position: fixed;
+  top: 10%;
+  font-family: 'Source Code Pro', monospace;
+  text-align: center;
+  display: none;
 }

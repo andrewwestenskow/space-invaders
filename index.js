@@ -14,7 +14,7 @@ let canShoot = true
 let moveInterval = 1000
 let direction = 'right'
 let lastDirection = ''
-let lost = false
+let gameEnd = false
 
 
 //GAME SETUP
@@ -124,8 +124,7 @@ const createEnemies = () => {
 //ENEMY LOGIC
 
 const handleMove = () => {
-  console.log(moveInterval)
-  if (moveInterval > 10 && !lost) {
+  if (moveInterval > 10 && !gameEnd) {
     setTimeout(() => {
       enemiesMove()
       handleMove()
@@ -327,6 +326,9 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
     boom.remove()
   }, 350);
   moveInterval -= 20
+  if(enemies.length === 0){
+    win()
+  }
 }
 
 const shoot = () => {
@@ -370,12 +372,22 @@ const startGame = (e) => {
     moveInterval = 1000
     direction = 'right'
     lastDirection = ''
-    lost = false
+    gameEnd = false
     createEnemies()
     handleMove()
     const welcome = document.querySelector('.welcome-screen')
+    const lose = document.querySelector('.lose-screen')
+    const win = document.querySelector('.win-screen')
     if (welcome) {
-      welcome.remove()
+      welcome.style.display = 'none'
+    }
+
+    if(lose){
+      lose.style.display = 'none'
+    }
+
+    if(win){
+      win.style.display = 'none'
     }
     document.removeEventListener('keydown', startGame)
     document.addEventListener('keydown', handleKeyDown)
@@ -385,16 +397,22 @@ const startGame = (e) => {
 }
 
 const lose = () => {
-  lost = true
+  gameEnd = true
   document.querySelectorAll('.enemy').forEach(element => element.remove())
   document.addEventListener('keydown', startGame)
   document.removeEventListener('keydown', handleKeyDown)
   document.removeEventListener('keyup', handleKeyUp)
-
+  const loseScreen = document.querySelector('.lose-screen')
+  loseScreen.style.display = 'block'
 }
 
 const win = () => {
-  console.log('win')
+  gameEnd = true
+  document.addEventListener('keydown', startGame)
+  document.removeEventListener('keydown', handleKeyDown)
+  document.removeEventListener('keyup', handleKeyUp)
+  const winScreen = document.querySelector('.win-screen')
+  winScreen.style.display = 'block'
 }
 
 
