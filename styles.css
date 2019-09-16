@@ -38,6 +38,23 @@ body{
   height: 60%;
 }
 
+#lives-hold{
+  position: fixed;
+  top: 10px;
+  right: 15%;
+}
+
+.heart{
+  width: 75px;
+}
+
+#score-hold{
+  position: fixed;
+  top: 10px;
+  left: 15%;
+  color: green;
+}
+
 .laser{
   position: absolute;
   border: 1px solid white;
@@ -73,15 +90,6 @@ body{
     bottom: 100%
   }
 }
-
-/* @keyframes enemyShoot {
-  0%{
-    top: 20%
-  }
-  100%{
-    top: 100%
-  }
-} */
 
 .enemy-laser{
   position: absolute;
@@ -136,5 +144,9 @@ body{
   top: 10%;
   font-family: 'Source Code Pro', monospace;
   text-align: center;
+  display: none;
+}
+
+.hide{
   display: none;
 }

@@ -2,6 +2,7 @@ const player = document.getElementById('player')
 const game = document.getElementById('game-area')
 const enemies = document.getElementsByClassName('enemy')
 const enemiesHold = document.getElementById('enemies-hold')
+const livesHold = document.getElementById('lives-hold')
 var row1 = []
 var row2 = []
 var row3 = []
@@ -16,6 +17,8 @@ let direction = 'right'
 let lastDirection = ''
 let gameEnd = false
 let enemyLaserAnimation = null
+let lives = 3
+let beingHit = false
 
 
 //GAME SETUP
@@ -206,42 +209,42 @@ const enemiesDown = () => {
 const enemyShoot = (index) => {
   const enemyElement = document.getElementById(watch[index].id)
   // console.log(window[`row${watch[index].row}`])
-  let enemyLaser = document.createElement('div')
-  enemyLaser.classList.add('enemy-laser')
-  enemyLaser.style.left = enemyElement.style.left
-  enemyLaser.style.top = enemyElement.style.top
-  addAnimation(`
-  @keyframes enemyShoot{
-    0%{
-      top: ${getLeft(enemyLaser.style.top) + 5}%
-    }
-    100%{
-      top: 100%
-    }
-  }
-  `)
-  enemyLaser.style.animation = `enemyShoot 1500ms linear`
-  let intervalId = setInterval(() => {
-    if (enemyLaser.offsetTop - player.offsetTop <= 15 && enemyLaser.offsetTop - player.offsetTop > 0) {
-        if (enemyLaser.offsetLeft === player.offsetLeft ||
-          (enemyLaser.offsetLeft - player.offsetLeft <= 100 && enemyLaser.offsetLeft - player.offsetLeft >= 0)) {
-          clearInterval(intervalId)
-          console.log('hit')
-          enemyLaser.remove()
-        }
+  if(enemyElement){
+    let enemyLaser = document.createElement('div')
+    enemyLaser.classList.add('enemy-laser')
+    enemyLaser.style.left = enemyElement.style.left
+    enemyLaser.style.top = enemyElement.style.top
+    addAnimation(`
+    @keyframes enemyShoot{
+      0%{
+        top: ${getLeft(enemyLaser.style.top) + 5}%
       }
-  }, 1);
-  enemyLaser.addEventListener('animationend', (e) => {
-    clearInterval(intervalId)
-    e.target.remove()})
-  const row = document.querySelector(`.row${watch[index].row}`)
-  row.append(enemyLaser)
+      100%{
+        top: 100%
+      }
+    }
+    `)
+    enemyLaser.style.animation = `enemyShoot 2500ms linear`
+    let intervalId = setInterval(() => {
+      if (enemyLaser.offsetTop - player.offsetTop <= 15 && enemyLaser.offsetTop - player.offsetTop > 0 && beingHit === false) {
+          if (enemyLaser.offsetLeft === player.offsetLeft ||
+            (enemyLaser.offsetLeft - player.offsetLeft <= 100 && enemyLaser.offsetLeft - player.offsetLeft >= 0)) {
+            clearInterval(intervalId)
+            hitPlayer()
+            enemyLaser.remove()
+          }
+        }
+    }, 1);
+    enemyLaser.addEventListener('animationend', (e) => {
+      clearInterval(intervalId)
+      e.target.remove()})
+    const row = document.querySelector(`.row${watch[index].row}`)
+    row.append(enemyLaser)
+  }
 }
 
-// 528 vs 451
 
-
-//FUNCTIONALITY
+//UTILITY
 
 const getLeft = (str) => {
   return +str.substr(0, str.length - 1)
@@ -303,7 +306,7 @@ const handleKeyDown = (e) => {
   }
 }
 
-handleKeyUp = (e) => {
+const handleKeyUp = (e) => {
   switch (e.keyCode) {
     case 37:
       let index = pressedKeys.indexOf(37)
@@ -404,6 +407,41 @@ const shoot = () => {
   game.appendChild(laser)
 }
 
+const hitPlayer = () => {
+  console.log(player)
+  beingHit = true
+  let interval = setInterval(() => {
+    player.classList.toggle('hide')
+  }, 150);
+
+  setTimeout(() => {
+    clearInterval(interval)
+    player.classList.remove('hide')
+    beingHit = false
+  }, 1000);
+  lives--
+  switch(lives){
+    case 2:
+      livesHold.innerHTML = `
+      <img class='heart' src="./Assets/heart.png" alt="life">
+      <img class='heart' src="./Assets/heart.png" alt="life">
+      `
+      break;
+    case 1: 
+      livesHold.innerHTML = `
+      <img class='heart' src="./Assets/heart.png" alt="life">
+      `
+      break;
+    case 0:
+      livesHold.innerHTML = ``
+      break;
+    case -1: 
+      lose()
+      break;
+  }
+  console.log(lives)
+}
+
 //Game start & end
 
 const startGame = (e) => {
@@ -421,6 +459,12 @@ const startGame = (e) => {
     direction = 'right'
     lastDirection = ''
     gameEnd = false
+    lives = 3
+    livesHold.innerHTML = `
+    <img class='heart' src="./Assets/heart.png" alt="life">
+      <img class='heart' src="./Assets/heart.png" alt="life">
+      <img class='heart' src="./Assets/heart.png" alt="life">
+    `
     createEnemies()
     handleMove()
     const welcome = document.querySelector('.welcome-screen')
