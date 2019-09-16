@@ -221,10 +221,24 @@ const enemyShoot = (index) => {
   }
   `)
   enemyLaser.style.animation = `enemyShoot 1500ms linear`
-  enemyLaser.addEventListener('animationend', (e) => e.target.remove())
+  let intervalId = setInterval(() => {
+    if (enemyLaser.offsetTop - player.offsetTop <= 15 && enemyLaser.offsetTop - player.offsetTop > 0) {
+        if (enemyLaser.offsetLeft === player.offsetLeft ||
+          (enemyLaser.offsetLeft - player.offsetLeft <= 100 && enemyLaser.offsetLeft - player.offsetLeft >= 0)) {
+          clearInterval(intervalId)
+          console.log('hit')
+          enemyLaser.remove()
+        }
+      }
+  }, 1);
+  enemyLaser.addEventListener('animationend', (e) => {
+    clearInterval(intervalId)
+    e.target.remove()})
   const row = document.querySelector(`.row${watch[index].row}`)
   row.append(enemyLaser)
 }
+
+// 528 vs 451
 
 
 //FUNCTIONALITY
