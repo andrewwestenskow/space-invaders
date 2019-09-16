@@ -74,6 +74,23 @@ body{
   }
 }
 
+/* @keyframes enemyShoot {
+  0%{
+    top: 20%
+  }
+  100%{
+    top: 100%
+  }
+} */
+
+.enemy-laser{
+  position: absolute;
+  border: 1px solid white;
+  height: 15px;
+  width: 1px;
+}
+
+
 .welcome-screen{
   color: green;
   position: fixed;

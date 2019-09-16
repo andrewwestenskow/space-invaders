@@ -15,6 +15,7 @@ let moveInterval = 1000
 let direction = 'right'
 let lastDirection = ''
 let gameEnd = false
+let enemyLaserAnimation = null
 
 
 //GAME SETUP
@@ -203,8 +204,28 @@ const enemiesDown = () => {
 }
 
 const enemyShoot = (index) => {
-  console.log(watch[index])
+  const enemyElement = document.getElementById(watch[index].id)
+  // console.log(window[`row${watch[index].row}`])
+  let enemyLaser = document.createElement('div')
+  enemyLaser.classList.add('enemy-laser')
+  enemyLaser.style.left = enemyElement.style.left
+  enemyLaser.style.top = enemyElement.style.top
+  addAnimation(`
+  @keyframes enemyShoot{
+    0%{
+      top: ${getLeft(enemyLaser.style.top) + 5}%
+    }
+    100%{
+      top: 100%
+    }
+  }
+  `)
+  enemyLaser.style.animation = `enemyShoot 1500ms linear`
+  enemyLaser.addEventListener('animationend', (e) => e.target.remove())
+  const row = document.querySelector(`.row${watch[index].row}`)
+  row.append(enemyLaser)
 }
+
 
 //FUNCTIONALITY
 
@@ -217,6 +238,13 @@ const disableShot = () => {
   setTimeout(() => {
     canShoot = true
   }, 250);
+}
+
+const addAnimation = (animation) => {
+  enemyLaserAnimation = document.createElement('style')
+  enemyLaserAnimation.type = 'text/css'
+  document.head.appendChild(enemyLaserAnimation)
+  enemyLaserAnimation.sheet.insertRule(animation, enemyLaserAnimation.length)
 }
 
 
@@ -332,7 +360,7 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
     boom.remove()
   }, 350);
   moveInterval -= 20
-  if(enemies.length === 0){
+  if (enemies.length === 0) {
     win()
   }
 }
@@ -388,11 +416,11 @@ const startGame = (e) => {
       welcome.style.display = 'none'
     }
 
-    if(lose){
+    if (lose) {
       lose.style.display = 'none'
     }
 
-    if(win){
+    if (win) {
       win.style.display = 'none'
     }
     document.removeEventListener('keydown', startGame)
