@@ -3,6 +3,7 @@ const game = document.getElementById('game-area')
 const enemies = document.getElementsByClassName('enemy')
 const enemiesHold = document.getElementById('enemies-hold')
 const livesHold = document.getElementById('lives-hold')
+const scoreHold = document.getElementById('score-hold')
 var row1 = []
 var row2 = []
 var row3 = []
@@ -12,13 +13,15 @@ let watch = []
 let enemyLoc = []
 let pressedKeys = []
 let canShoot = true
-let moveInterval = 1000
+let moveInterval = 1500
 let direction = 'right'
 let lastDirection = ''
 let gameEnd = false
 let enemyLaserAnimation = null
 let lives = 3
 let beingHit = false
+let score = 0
+let enemyCanShoot = true
 
 
 //GAME SETUP
@@ -45,7 +48,7 @@ const createEnemies = () => {
     let row = document.querySelector('.row4')
     let alien = new Image()
     alien.src = './Assets/alien3.png'
-    alien.classList.add('enemy', '4')
+    alien.classList.add('enemy', '4', 'alien3')
     alien.style.left = `${left}%`
     alien.style.top = `15%`
     alien.id = `enemy-${id}`
@@ -60,7 +63,7 @@ const createEnemies = () => {
     let row = document.querySelector('.row3')
     let alien = new Image()
     alien.src = './Assets/alien1.png'
-    alien.classList.add('enemy', '3')
+    alien.classList.add('enemy', '3', 'alien1')
     alien.style.left = `${left}%`
     alien.style.top = `20%`
     alien.id = `enemy-${id}`
@@ -75,7 +78,7 @@ const createEnemies = () => {
     let row = document.querySelector('.row2')
     let alien = new Image()
     alien.src = './Assets/alien3.png'
-    alien.classList.add('enemy', '2')
+    alien.classList.add('enemy', '2', 'alien3')
     alien.style.left = `${left}%`
     alien.style.top = `25%`
     alien.id = `enemy-${id}`
@@ -90,7 +93,7 @@ const createEnemies = () => {
     let row = document.querySelector('.row1')
     let alien = new Image()
     alien.src = './Assets/alien1.png'
-    alien.classList.add('enemy', '1')
+    alien.classList.add('enemy', '1', 'alien1')
     alien.style.left = `${left}%`
     alien.style.top = `30%`
     alien.id = `enemy-${id}`
@@ -133,7 +136,12 @@ const handleMove = () => {
       enemiesMove()
       handleMove()
       let enemyShootIndex = Math.floor(Math.random() * 11)
-      enemyShoot(enemyShootIndex)
+      if(enemyCanShoot){
+        enemyShoot(enemyShootIndex)
+        enemyCanShoot = false
+      } else {
+        enemyCanShoot = true
+      }
     }, moveInterval);
   }
 }
@@ -209,7 +217,7 @@ const enemiesDown = () => {
 const enemyShoot = (index) => {
   const enemyElement = document.getElementById(watch[index].id)
   // console.log(window[`row${watch[index].row}`])
-  if(enemyElement){
+  if (enemyElement) {
     let enemyLaser = document.createElement('div')
     enemyLaser.classList.add('enemy-laser')
     enemyLaser.style.left = enemyElement.style.left
@@ -227,17 +235,18 @@ const enemyShoot = (index) => {
     enemyLaser.style.animation = `enemyShoot 2500ms linear`
     let intervalId = setInterval(() => {
       if (enemyLaser.offsetTop - player.offsetTop <= 15 && enemyLaser.offsetTop - player.offsetTop > 0 && beingHit === false) {
-          if (enemyLaser.offsetLeft === player.offsetLeft ||
-            (enemyLaser.offsetLeft - player.offsetLeft <= 100 && enemyLaser.offsetLeft - player.offsetLeft >= 0)) {
-            clearInterval(intervalId)
-            hitPlayer()
-            enemyLaser.remove()
-          }
+        if (enemyLaser.offsetLeft === player.offsetLeft ||
+          (enemyLaser.offsetLeft - player.offsetLeft <= 100 && enemyLaser.offsetLeft - player.offsetLeft >= 0)) {
+          clearInterval(intervalId)
+          hitPlayer()
+          enemyLaser.remove()
         }
+      }
     }, 1);
     enemyLaser.addEventListener('animationend', (e) => {
       clearInterval(intervalId)
-      e.target.remove()})
+      e.target.remove()
+    })
     const row = document.querySelector(`.row${watch[index].row}`)
     row.append(enemyLaser)
   }
@@ -353,6 +362,13 @@ const killEnemy = (enemy, laser, intervalId, locIndex) => {
 
   clearInterval(intervalId)
   //Data manipulation
+  if (findEnemy.classList.contains('alien1')) {
+    score += 20
+  } else {
+    score += 40
+  }
+  scoreHold.innerText = `SCORE: ${score}`
+
   enemyLoc.splice(index, 1)
   const replacement = window[`row${enemy.row + 1}`][locIndex]
   if (replacement) {
@@ -408,7 +424,6 @@ const shoot = () => {
 }
 
 const hitPlayer = () => {
-  console.log(player)
   beingHit = true
   let interval = setInterval(() => {
     player.classList.toggle('hide')
@@ -420,14 +435,14 @@ const hitPlayer = () => {
     beingHit = false
   }, 1000);
   lives--
-  switch(lives){
+  switch (lives) {
     case 2:
       livesHold.innerHTML = `
       <img class='heart' src="./Assets/heart.png" alt="life">
       <img class='heart' src="./Assets/heart.png" alt="life">
       `
       break;
-    case 1: 
+    case 1:
       livesHold.innerHTML = `
       <img class='heart' src="./Assets/heart.png" alt="life">
       `
@@ -435,11 +450,10 @@ const hitPlayer = () => {
     case 0:
       livesHold.innerHTML = ``
       break;
-    case -1: 
+    case -1:
       lose()
       break;
   }
-  console.log(lives)
 }
 
 //Game start & end
@@ -460,6 +474,8 @@ const startGame = (e) => {
     lastDirection = ''
     gameEnd = false
     lives = 3
+    score = 0
+    scoreHold.innerText = `SCORE: ${score}`
     livesHold.innerHTML = `
     <img class='heart' src="./Assets/heart.png" alt="life">
       <img class='heart' src="./Assets/heart.png" alt="life">
